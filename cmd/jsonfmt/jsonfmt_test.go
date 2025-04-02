@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"testing"
 )
 
@@ -140,11 +141,13 @@ func TestFormatJSON(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := formatJSON(tt.input, indent, 0)
+			buf := &bytes.Buffer{}
+			err := formatJSON(buf, tt.input, []byte(indent), 0)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("formatJSON() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
+			got := buf.String()
 			if err == nil && got != tt.expected {
 				t.Errorf("formatJSON() = %q, want %q", got, tt.expected)
 			}
